@@ -15,14 +15,12 @@
          #'v]
         [(v:id . rest)
          #'v]
-        [_ (error gen-name
-                  (string-append
-                   "expected first argument to syntax generic to be identifier"
-                   " or syntax pair with identifier in head"))]))
+        [_ #f]))
     (define f
-      (or (let ([v (syntax-local-value v (lambda () #f))])
-            (and (prop-pred v)
-                 ((prop-ref v) v)))
+      (or (and v
+               (let ([v (syntax-local-value v (lambda () #f))])
+                 (and (prop-pred v)
+                      ((prop-ref v) v))))
           fallback))
     (apply f stx-arg args)))
 
@@ -52,8 +50,8 @@
           "expected reference to syntax generic"
           this-syntax))
        (let ([v (syntax-local-value
-                      #'gen-name
-                      error)])
+                 #'gen-name
+                 error)])
          (or (and (generic? v) (generic-prop v))
              (error)))])))
 
